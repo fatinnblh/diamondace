@@ -35,3 +35,14 @@ Route::post('/payment-method/{order_id}', [OrderController::class, 'handlePaymen
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+Route::post('/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+
+// Admin Routes
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+    
+    Route::get('/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
+});

@@ -145,4 +145,13 @@ class OrderController extends Controller
 
        return redirect()->route('orders.summary', ['id' => $order_id])->with('error', 'Invalid payment method.');
    }
+
+   public function adminIndex()
+   {
+       $orders = Order::with('user')
+                     ->latest()
+                     ->paginate(10);
+        
+       return view('admin.orders.index', compact('orders'));
+   }
 }

@@ -17,7 +17,13 @@ class AuthenticatedSessionController extends Controller
 
         // Attempt to log the user in
         if (Auth::attempt($request->only('email', 'password'))) {
-            // Redirect to home after successful login
+            $request->session()->regenerate();
+            
+            // Check if user is admin and redirect accordingly
+            if (Auth::user()->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            }
+            
             return redirect()->route('home');
         }
 
@@ -25,5 +31,13 @@ class AuthenticatedSessionController extends Controller
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
+    }
+
+    public function destroy(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
     }
 }

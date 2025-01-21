@@ -1,154 +1,489 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AceThesis@U - Home</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <nav>
-            <ul>
-                <li><a href="{{ route('home') }}">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Service</a></li>
-                <li><a href="#">Contact Us</a></li>
-                <li><a href="{{ route('login') }}">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+@extends('layouts.app')
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Streamline Your <span>Thesis Printing Process</span></h1>
-            <p>Providing high-quality thesis printing services tailored to your needs...</p>
-            @auth
-                <a href="{{ route('orders.create') }}" class="btn-order">Order Thesis</a>
-            @else
-                <a href="{{ route('login') }}" class="btn-order">Order Thesis</a>
-            @endauth
-        </div>
-    </section>
-
-    <!-- How You Can Order Section -->
-    <section class="steps">
-        <h2>How You Can Order</h2>
-        <div class="step-icons">
-            <div class="step">
-                <img src="{{ asset('images/customization.jpg') }}" alt="Customization">
-                <p>Customization</p>
-            </div>
-            <div class="step">
-                <img src="{{ asset('images/upload.jpg') }}" alt="Upload">
-                <p>Upload</p>
-            </div>
-            <div class="step">
-                <img src="{{ asset('images/review details.jpg') }}" alt="Review Details">
-                <p>Review Details</p>
-            </div>
-            <div class="step">
-                <img src="{{ asset('images/Payment Method.jpg') }}" alt="Payment Method">
-                <p>Payment Method</p>
-            </div>
-            <div class="step">
-                <img src="{{ asset('images/submit order.jpg') }}" alt="Submit Order">
-                <p>Submit Order</p>
-            </div>
-            <div class="step">
-                <img src="{{ asset('images/track order.jpg') }}" alt="Track Order">
-                <p>Track Order</p>
-            </div>
-            <div class="step">
-                <img src="{{ asset('images/delivery-icon.png') }}" alt="Delivery/Pickup">
-                <p>Delivery/Pickup</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; {{ date('Y') }} AceThesis@U. All rights reserved.</p>
-    </footer>
-
-    <!-- Optional: Include JS files -->
-</body>
-</html>
+@section('content')
 <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            background-color: #f4f4f8;
-        }
+.thesis-container {
+  gap: 20px;
+  display: flex;
+}
 
-        header nav ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            padding: 1rem 0;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+.image-column {
+  display: flex;
+  flex-direction: column;
+  line-height: normal;
+  width: 50%;
+  margin-left: 0;
+}
 
-        header nav ul li {
-            margin: 0 15px;
-        }
+.thesis-image {
+  aspect-ratio: 1.08;
+  object-fit: contain;
+  object-position: center;
+  width: 100%;
+  flex-grow: 1;
+}
 
-        header nav ul li a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
+.content-column {
+  display: flex;
+  flex-direction: column;
+  line-height: normal;
+  width: 50%;
+  margin-left: 20px;
+}
 
-        .hero {
-            text-align: center;
-            padding: 50px 20px;
-            background-color: #eef2fa;
-        }
+.content-wrapper {
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  font-family: Inter, sans-serif;
+}
 
-        .hero h1 {
-            font-size: 2rem;
-        }
+.heading-primary {
+  color: var(--Main-color, #0a2472);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 72px;
+  text-transform: capitalize;
+}
 
-        .hero .btn-order {
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+.highlight-text {
+  color: rgba(10, 36, 114, 1);
+}
 
-        .steps {
-            padding: 20px;
-            text-align: center;
-        }
+.description-text {
+  color: #000;
+  text-align: justify;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 41px 26px 0 0;
+}
 
-        .step-icons {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
+@media (max-width: 991px) {
+  .thesis-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
 
-        .step {
-            margin: 15px;
-            text-align: center;
-        }
+  .image-column {
+    width: 100%;
+  }
 
-        .step img {
-            max-width: 100px;
-            height: auto;
-        }
+  .thesis-image {
+    max-width: 100%;
+    margin-top: 40px;
+  }
 
-        footer {
-            background: #35424a;
-            color: #ffffff;
-            text-align: center;
-            padding: 20px 0;
-        }
-    </style>
+  .content-column {
+    width: 100%;
+  }
+
+  .content-wrapper {
+    max-width: 100%;
+    margin: 40px -16px 0 0;
+  }
+
+  .heading-primary {
+    max-width: 100%;
+    font-size: 40px;
+    line-height: 67px;
+  }
+
+  .description-text {
+    max-width: 100%;
+    margin: 40px 10px 0 0;
+  }
+}
+
+/* Existing styles for steps section */
+.steps {
+    padding: 3rem;
+    text-align: center;
+    background: linear-gradient(to bottom, #ffffff, #f8f9ff);
+    margin-top: 4rem;
+}
+
+.steps h2 {
+    margin-bottom: 3rem;
+    color: #0a2472;
+    font-size: 36px;
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 12px;
+}
+
+.steps h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background: #0a2472;
+    border-radius: 2px;
+}
+
+.step-icons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.step {
+    flex: 1;
+    min-width: 200px;
+    max-width: 250px;
+    padding: 35px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 4px 15px rgba(10, 36, 114, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease backwards;
+}
+
+.step::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(10, 36, 114, 0.1), rgba(65, 105, 225, 0.1));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.step:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(10, 36, 114, 0.15);
+}
+
+.step:hover::before {
+    opacity: 1;
+}
+
+.step img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1.5rem;
+    border-radius: 15px;
+    padding: 15px;
+    background: #f8f9ff;
+    transition: all 0.4s ease;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+}
+
+.step:hover img {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 5px 15px rgba(10, 36, 114, 0.2);
+    animation: iconPulse 1s ease infinite;
+}
+
+.step p {
+    color: #0a2472;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.step:hover p {
+    transform: scale(1.05);
+    color: #4169e1;
+}
+
+.step::after {
+    content: attr(data-step);
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 48px;
+    font-weight: 700;
+    color: rgba(10, 36, 114, 0.1);
+    transition: all 0.4s ease;
+    z-index: 0;
+}
+
+.step:hover::after {
+    transform: scale(1.2);
+    color: rgba(10, 36, 114, 0.15);
+}
+
+@keyframes iconPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1) rotate(5deg); }
+    100% { transform: scale(1); }
+}
+
+.step:nth-child(1) { animation-delay: 0.1s; }
+.step:nth-child(2) { animation-delay: 0.2s; }
+.step:nth-child(3) { animation-delay: 0.3s; }
+.step:nth-child(4) { animation-delay: 0.4s; }
+.step:nth-child(5) { animation-delay: 0.5s; }
+.step:nth-child(6) { animation-delay: 0.6s; }
+.step:nth-child(7) { animation-delay: 0.7s; }
+
+@media (max-width: 768px) {
+    .steps {
+        padding: 2rem;
+    }
+
+    .step-icons {
+        gap: 1.5rem;
+    }
+    
+    .step {
+        min-width: 160px;
+        padding: 25px;
+    }
+    
+    .step img {
+        width: 80px;
+        height: 80px;
+        padding: 12px;
+    }
+
+    .step p {
+        font-size: 1.1rem;
+    }
+
+    .step::after {
+        font-size: 36px;
+    }
+}
+
+/* New styles for Order Thesis button */
+.btn-order {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: 140px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(10, 36, 114, 1);
+    background: rgba(10, 36, 114, 1);
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 30px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 15px;
+    text-align: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(10, 36, 114, 0.2);
+}
+
+.btn-order:hover {
+    background: rgba(10, 36, 114, 0.9);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(10, 36, 114, 0.3);
+}
+
+.btn-order:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(10, 36, 114, 0.2);
+}
+
+.btn-order i {
+    font-size: 15px;
+    transition: transform 0.3s ease;
+}
+
+.btn-order:hover i {
+    transform: translateX(3px);
+    animation: cartBounce 0.5s ease infinite;
+}
+
+@keyframes cartBounce {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(3px);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.reviews {
+    padding: 3rem;
+    background-color: #f8f9ff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 3rem;
+}
+
+.review-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.review-item {
+    flex: 1 1 calc(50% - 1rem); /* Two items per row with space in between */
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.review-form {
+    margin-top: 2rem;
+}
+
+.review-form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+    resize: none;
+}
+</style>
+
+<div class="thesis-container">
+  <div class="image-column">
+    <img
+      loading="lazy"
+      src="https://cdn.builder.io/api/v1/image/assets/TEMP/274e56cc5d08b314fb40edc6e84a4f916af8aaec6e2a1fb1ded319e43669ea19?apiKey=b56619f457e04fabb944a490a22592a3&"
+      class="thesis-image"
+      alt="Thesis printing process illustration"
+    />
+  </div>
+  <div class="content-column">
+    <div class="content-wrapper">
+      <h1 class="heading-primary">
+        Streamline your
+        <span class="highlight-text">
+          Thesis Printing Process
+        </span>
+        and Enjoy top-quality results effortlessly
+      </h1>
+      <p class="description-text">
+        Providing high-quality thesis printing services tailored to your
+        needs, with options for customization and affordable pricing, ensuring
+        your academic work is presented at its best. Experience hassle-free
+        thesis printing with a user-friendly platform designed to deliver
+        exceptional quality and convenience, leaving a lasting impression on
+        your academic achievements.
+      </p>
+      @auth
+          <a href="{{ route('orders.create') }}" class="btn-order">
+              <i class="fas fa-shopping-cart"></i>
+              Order Thesis
+          </a>
+      @else
+          <a href="{{ route('login') }}" class="btn-order">
+              <i class="fas fa-shopping-cart"></i>
+              Order Thesis
+          </a>
+      @endauth
+    </div>
+  </div>
+</div>
+
+<!-- How You Can Order Section -->
+<section class="steps">
+    <h2>How You Can Order</h2>
+    <div class="step-icons">
+        <div class="step" data-step="1">
+            <img src="{{ asset('images/customization.jpg') }}" alt="Customization">
+            <p>Customization</p>
+        </div>
+        <div class="step" data-step="2">
+            <img src="{{ asset('images/upload.jpg') }}" alt="Upload">
+            <p>Upload</p>
+        </div>
+        <div class="step" data-step="3">
+            <img src="{{ asset('images/review details.jpg') }}" alt="Review Details">
+            <p>Review Details</p>
+        </div>
+        <div class="step" data-step="4">
+            <img src="{{ asset('images/Payment Method.jpg') }}" alt="Payment Method">
+            <p>Payment Method</p>
+        </div>
+        <div class="step" data-step="5">
+            <img src="{{ asset('images/submit order.jpg') }}" alt="Submit Order">
+            <p>Submit Order</p>
+        </div>
+        <div class="step" data-step="6">
+            <img src="{{ asset('images/track order.jpg') }}" alt="Track Order">
+            <p>Track Order</p>
+        </div>
+        <div class="step" data-step="7">
+            <img src="{{ asset('images/pickup_delivery.jpg') }}" alt="Delivery/Pickup">
+            <p>Delivery/Pickup</p>
+        </div>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<section class="reviews">
+    @auth
+    <div class="review-form">
+        <h3>Submit Your Review</h3>
+        <form action="{{ route('reviews.store') }}" method="POST">
+            @csrf
+            <textarea name="review" rows="4" placeholder="Write your review here..." required></textarea>
+            <button type="submit" class="btn-order">Submit Review</button>
+        </form>
+    </div>
+    @endauth
+    @guest
+    <p>Please log in to submit your review.</p><section class="reviews">
+        <h2>Reviews from Our Customers</h2>
+        <div class="review-list">
+            <div class="review-item">
+                <p><strong>Azran:</strong> Great service! Highly recommend.</p>
+            </div>
+            <div class="review-item">
+                <p><strong>Fatin:</strong> The quality of the thesis printing was excellent!</p>
+            </div>
+            <!-- More reviews can be added here -->
+        </div>
+    
+        @auth
+        <div class="review-form">
+            <h3>Submit Your Review</h3>
+            <form action="{{ route('reviews.store') }}" method="POST">
+                @csrf
+                <textarea name="review" rows="4" placeholder="Write your review here..." required></textarea>
+                <button type="submit" class="btn-order">Submit Review</button>
+            </form>
+        </div>
+        @endauth
+    
+        @guest
+        <p>Please log in to submit your review.</p>
+        @endguest
+    </section>
+    @endguest
+@endsection
