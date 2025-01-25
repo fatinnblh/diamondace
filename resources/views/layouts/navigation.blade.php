@@ -88,9 +88,25 @@
 </style>
 
 <nav class="nav-container" role="navigation">
-    <a href="{{ url('/') }}" class="brand-logo">AceThesis@U</a>
+    @auth
+        @if(auth()->check() && auth()->user()->isAdmin())
+            <a href="{{ url('/admin') }}" class="brand-logo">AceThesis@U</a>
+        @else
+            <a href="{{ url('/') }}" class="brand-logo">AceThesis@U</a>
+        @endif
+    @else
+        <a href="{{ url('/') }}" class="brand-logo">AceThesis@U</a>
+    @endauth
     <div class="nav-links">
-        <a href="{{ url('/') }}" tabindex="0">Home</a>
+        @auth
+            @if(auth()->check() && auth()->user()->isAdmin())
+                <a href="{{ url('/admin') }}" tabindex="0">Home</a>
+            @else
+                <a href="{{ url('/') }}" tabindex="0">Home</a>
+            @endif
+        @else
+            <a href="{{ url('/') }}" tabindex="0">Home</a>
+        @endauth
         <a href="{{ url('/about') }}" tabindex="0">About</a>
         <a href="{{ url('/service') }}" tabindex="0">Service</a>
         <a href="{{ url('/contact') }}" tabindex="0">Contact us</a>

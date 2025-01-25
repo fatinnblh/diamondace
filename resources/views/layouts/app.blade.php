@@ -62,12 +62,60 @@
             align-self: stretch;
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 12px;
             color: #000;
             font-weight: 400;
             white-space: nowrap;
             justify-content: start;
             margin: auto 0;
+        }
+        .login-button {
+            align-self: stretch;
+            border-radius: 8px;
+            gap: 10px;
+            margin: auto 0;
+            padding: 8px 16px;
+            border: 1px solid #0A2472;
+            cursor: pointer;
+            background: #0A2472;
+            color: white;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+        }
+        .login-button:hover {
+            background: #051650;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(10, 36, 114, 0.2);
+        }
+        .login-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(10, 36, 114, 0.2);
+        }
+        .register-button {
+            align-self: stretch;
+            border-radius: 8px;
+            gap: 10px;
+            margin: auto 0;
+            padding: 8px 16px;
+            border: 1px solid #0A2472;
+            cursor: pointer;
+            background: transparent;
+            color: #0A2472;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .register-button:hover {
+            background: #0A2472;
+            color: white;
+            text-decoration: none;
         }
         @media (max-width: 991px) {
             .nav-actions {
@@ -83,50 +131,33 @@
             margin: auto 0;
             cursor: pointer;
         }
-        .login-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            width: 100px;
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(10, 36, 114, 1);
-            background: rgba(10, 36, 114, 1);
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 15px;
-            text-align: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(10, 36, 114, 0.2);
-        }
-
-        .login-button:hover {
-            background: rgba(10, 36, 114, 0.9);
-            color: white;
-            text-decoration: none;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(10, 36, 114, 0.3);
-        }
-
-        .login-button:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 10px rgba(10, 36, 114, 0.2);
-        }
     </style>
 </head>
 <body>
     <div id="app">
         <nav class="nav-container" role="navigation">
-            <a href="{{ url('/') }}" class="brand-logo">AceThesis@U</a>
+            @auth
+                @if(auth()->user()->isAdmin())
+                    <a href="{{ url('/admin') }}" class="brand-logo">AceThesis@U</a>
+                @else
+                    <a href="{{ url('/') }}" class="brand-logo">AceThesis@U</a>
+                @endif
+            @else
+                <a href="{{ url('/') }}" class="brand-logo">AceThesis@U</a>
+            @endauth
             <div class="nav-links">
-                <a href="{{ url('/') }}" tabindex="0">Home</a>
+                @auth
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ url('/admin') }}" tabindex="0">Home</a>
+                    @else
+                        <a href="{{ url('/') }}" tabindex="0">Home</a>
+                    @endif
+                @else
+                    <a href="{{ url('/') }}" tabindex="0">Home</a>
+                @endauth
                 <a href="{{ url('/about') }}" tabindex="0">About</a>
                 <a href="{{ url('/service') }}" tabindex="0">Service</a>
-                <a href="{{ url('/contact') }}" tabindex="0">Contact us</a>
+                <a href="https://wa.me/60142230434" tabindex="0" target="_blank">Contact us</a>
             </div>
             <div class="nav-actions">
                 <img
@@ -148,11 +179,15 @@
                     alt="Cart"
                 />
                 @guest
-                    <a href="{{ route('login') }}" class="login-button" tabindex="0">Login</a>
+                    <a href="{{ route('login') }}" class="login-button" tabindex="0">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
                 @else
                     <form method="POST" action="{{ route('logout') }}" class="d-inline">
                         @csrf
-                        <button type="submit" class="login-button" tabindex="0">Logout</button>
+                        <button type="submit" class="login-button" tabindex="0">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
                     </form>
                 @endguest
             </div>

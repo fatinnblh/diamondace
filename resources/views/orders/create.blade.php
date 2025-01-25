@@ -24,18 +24,38 @@
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
                 </div>
-                
+
+                <div class="form-group">
+                    <label for="print_color">Color:</label>
+                    <select name="print_color" id="print_color" required class="rounded-input" onchange="updateCost()">
+                        <option value="bw">Black and White</option>
+                        <option value="color">Color</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label>Page Count:</label>
                     <p id="page_count">0</p>
                 </div>
-                
+
                 <div class="form-group">
                     <label>Base Cost (RM):</label>
                     <p id="base_cost">0.00</p>
                 </div>
                 
                 <script>
+                    function calculateBaseCost(pageCount, printType) {
+                        const costPerPage = printType === 'color' ? 0.50 : 0.10;
+                        return pageCount * costPerPage;
+                    }
+
+                    function updateCost() {
+                        const pageCount = parseInt(document.getElementById('page_count').innerText) || 0;
+                        const printType = document.getElementById('print_color').value;
+                        const baseCost = calculateBaseCost(pageCount, printType);
+                        document.getElementById('base_cost').innerText = baseCost.toFixed(2);
+                    }
+
                     function updatePageCountAndCost() {
                         const fileInput = document.getElementById('thesis_file');
                         const file = fileInput.files[0];
@@ -54,7 +74,9 @@
                             .then(response => response.json())
                             .then(data => {
                                 document.getElementById('page_count').innerText = data.page_count;
-                                document.getElementById('base_cost').innerText = (data.base_cost).toFixed(2);
+                                const printType = document.getElementById('print_color').value;
+                                const baseCost = calculateBaseCost(data.page_count, printType);
+                                document.getElementById('base_cost').innerText = baseCost.toFixed(2);
                             })
                             .catch(error => console.error('Error:', error));
                         }
@@ -72,9 +94,10 @@
                 <div class="form-group">
                     <label for="binding_style">Binding Style:</label>
                     <select name="binding_style" id="binding_style" required class="rounded-input">
+                        <option value="Hard Cover">Hard Cover</option>
+                        <option value="Sewn">Sewn</option>
                         <option value="Spiral">Spiral</option>
                         <option value="Tape">Tape</option>
-                        <option value="Hard Cover">Hard Cover</option>
                     </select>
                 </div>
 
@@ -85,6 +108,8 @@
                         <option value="Dark Blue">Dark Blue</option>
                         <option value="Maroon">Maroon</option>
                         <option value="White">White</option>
+                        <option value="Purple">Purple</option>
+                        <option value="Green">Green</option>
                     </select>
                 </div>
 

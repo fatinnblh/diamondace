@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('login') }}" id="login-form">
                         @csrf
 
                         <div class="row mb-3">
@@ -57,11 +57,20 @@
                                     {{ __('Login') }}
                                 </button>
 
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
+                                <div class="mt-2">
+                                    @if (Route::has('password.request'))
+                                        <a class="btn btn-link px-0" href="{{ route('password.request') }}">
+                                            {{ __('Forgot Your Password?') }}
+                                        </a>
+                                    @endif
+                                    
+                                    @if (Route::has('register'))
+                                        <span class="mx-1">|</span>
+                                        <a class="btn btn-link px-0" href="{{ route('register') }}">
+                                            {{ __('Create New Account') }}
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -71,3 +80,19 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+function handleCredentialResponse(response) {
+    // Send the token to your server
+    const form = document.querySelector('form');  
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'credential';
+    input.value = response.credential;
+    form.appendChild(input);
+    form.submit();
+}
+</script>
+@endpush

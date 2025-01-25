@@ -28,6 +28,7 @@ class OrderController extends Controller
            'quantity' => 'required|integer|min:1',
            'shipping_option' => 'required|string',
            'payment_method' => 'required|string',
+           'print_color' => 'required|string|in:bw,color',
        ]);
    
        if ($validator->fails()) {
@@ -51,10 +52,12 @@ class OrderController extends Controller
        }
    
        // Calculate base cost
-       $baseCost = $pageCount * 0.10;
+       $costPerPage = $request->print_color === 'color' ? 0.50 : 0.10;
+       $baseCost = $pageCount * $costPerPage;
    
        // Create a new order record and store it in a variable
        $order = Order::create([
+           'user_id' => auth()->id(),
            'file_path' => $filePath,
            'paper_size' => $request->paper_size,
            'binding_style' => $request->binding_style,
@@ -64,6 +67,7 @@ class OrderController extends Controller
            'base_cost' => $baseCost,
            'shipping_option' => $request->shipping_option, 
            'payment_method' => $request->payment_method, 
+           'print_color' => $request->print_color,
        ]);
    
        // Redirect to the summary page using the newly created order's ID
@@ -79,7 +83,6 @@ class OrderController extends Controller
    
        // Handle file upload and count pages
        $pageCount = 0;
-       $baseCost = 0;
    
        if ($request->file('thesis_file')->getClientOriginalExtension() === 'pdf') {
            $pdfParser = new PdfParser();
@@ -90,21 +93,16 @@ class OrderController extends Controller
            $pageCount = count($phpWord->getSections());
        }
    
-       // Calculate base cost
-       $baseCost = $pageCount * 0.10; // RM0.10 per page
-   
        return response()->json([
            'page_count' => $pageCount,
-           'base_cost' => $baseCost,
        ]);
    }
 
    public function summary($id)
    {
-       // Fetch the order details from the database using the ID
-       $order = Order::findOrFail($id); // This will throw a 404 if the order is not found
-   
-       // Return the summary view with the order data
+       $order = Order::findOrFail($id);
+       $order->file_url = asset('storage/' . $order->file_path);
+        
        return view('orders.summary', compact('order'));
    }
 
@@ -146,12 +144,101 @@ class OrderController extends Controller
        return redirect()->route('orders.summary', ['id' => $order_id])->with('error', 'Invalid payment method.');
    }
 
+   public function uploadReceipt(Request $request, $order_id)
+    {
+        $request->validate([
+            'receipt_upload' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        $order = Order::findOrFail($order_id);
+
+        if ($request->hasFile('receipt_upload')) {
+            $receiptPath = $request->file('receipt_upload')->store('receipts', 'public');
+            $order->update(['receipt_path' => $receiptPath]);
+        }
+
+        if ($order->shipping_option == 'delivery') {
+            return redirect()->route('delivery.address.form', ['order_id' => $order->id]);
+        } else {
+            return redirect()->route('pickup.address.form', ['order_id' => $order->id]);
+        }
+    }
+
+    public function showTrackingProgress($order_id)
+    {
+        $order = Order::findOrFail($order_id);
+        return view('orders.tracking', compact('order'));
+    }
+
+    public function handleDeliveryAddress(Request $request, $order_id)
+    {
+        $request->validate([
+            'address' => 'required|string',
+            'city' => 'required|string',
+            'postcode' => 'required|string',
+        ]);
+
+        $order = Order::findOrFail($order_id);
+        $order->update([
+            'delivery_address' => $request->address,
+            'delivery_city' => $request->city,
+            'delivery_postcode' => $request->postcode,
+            'status' => $order->payment_method === 'qr_code' ? Order::STATUS_AWAITING_PAYMENT : Order::STATUS_PAYMENT_VERIFIED
+        ]);
+
+        return redirect()->route('orders.tracking', ['order_id' => $order->id]);
+    }
+
+    public function handlePickupAddress(Request $request, $order_id)
+    {
+        $order = Order::findOrFail($order_id);
+        $order->update([
+            'status' => $order->payment_method === 'qr_code' ? Order::STATUS_AWAITING_PAYMENT : Order::STATUS_PAYMENT_VERIFIED
+        ]);
+
+        return redirect()->route('orders.tracking', ['order_id' => $order->id]);
+    }
+
+    public function uploadReceiptUpdated(Request $request, $order_id)
+    {
+        $request->validate([
+            'receipt_upload' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        $order = Order::findOrFail($order_id);
+
+        if ($request->hasFile('receipt_upload')) {
+            $receiptPath = $request->file('receipt_upload')->store('receipts', 'public');
+            $order->update([
+                'receipt_path' => $receiptPath,
+                'status' => Order::STATUS_PAYMENT_VERIFIED
+            ]);
+        }
+
+        return redirect()->route('orders.tracking', ['order_id' => $order->id]);
+    }
+
    public function adminIndex()
-   {
-       $orders = Order::with('user')
-                     ->latest()
-                     ->paginate(10);
-        
-       return view('admin.orders.index', compact('orders'));
-   }
+    {
+        $orders = Order::with('user')->latest()->paginate(10);
+        return view('admin.orders.index', compact('orders'));
+    }
+
+    public function adminShow($order_id)
+    {
+        $order = Order::findOrFail($order_id);
+        return view('admin.orders.show', compact('order'));
+    }
+
+    public function updateOrderStatus(Request $request, $order_id)
+    {
+        $request->validate([
+            'status' => 'required|string|in:printing_in_progress,ready'
+        ]);
+
+        $order = Order::findOrFail($order_id);
+        $order->update(['status' => $request->status]);
+
+        return response()->json(['success' => true]);
+    }
 }

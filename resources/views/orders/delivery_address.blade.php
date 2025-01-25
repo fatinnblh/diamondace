@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-    <h1>Delivery Address</h1>
-    <form action="{{ route('payment.method', ['order_id' => $order->id]) }}" method="POST">
+    <h2>Delivery Address</h2>
+    <form action="{{ route('delivery.address.submit', ['order_id' => $order->id]) }}" method="POST">
         @csrf
         <div class="form-group">
             <label for="address">Address:</label>
@@ -17,7 +17,7 @@
             <label for="postcode">Postcode:</label>
             <input type="text" name="postcode" id="postcode" required class="form-control">
         </div>
-        <button type="submit" class="btn btn-primary">Continue to Payment</button>
+        <button type="submit" class="btn btn-primary">Submit Order</button>
     </form>
 </div>
 @endsection

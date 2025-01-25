@@ -23,42 +23,34 @@
                                 <thead>
                                     <tr>
                                         <th>Order ID</th>
-                                        <th>Customer</th>
-                                        <th>Paper Size</th>
-                                        <th>Binding Style</th>
-                                        <th>Cover Color</th>
-                                        <th>Quantity</th>
-                                        <th>Shipping</th>
-                                        <th>Payment</th>
-                                        <th>Status</th>
-                                        <th>Created At</th>
+                                        <th>Payment Method</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($orders as $order)
                                         <tr>
-                                            <td>#{{ $order->id }}</td>
-                                            <td>{{ $order->user->name ?? 'N/A' }}</td>
-                                            <td>{{ $order->paper_size }}</td>
-                                            <td>{{ $order->binding_style }}</td>
-                                            <td>{{ $order->cover_colour }}</td>
-                                            <td>{{ $order->quantity }}</td>
-                                            <td>{{ $order->shipping_option }}</td>
-                                            <td>{{ $order->payment_method }}</td>
+                                            <td>ID{{ $order->id }}</td>
+                                            <td>{{ $order->formatted_payment_method }}</td>
                                             <td>
-                                                <span class="badge bg-{{ $order->status === 'completed' ? 'success' : ($order->status === 'pending' ? 'warning' : 'info') }}">
-                                                    {{ ucfirst($order->status) }}
-                                                </span>
-                                            </td>
-                                            <td>{{ $order->created_at->format('Y-m-d H:i') }}</td>
-                                            <td>
-                                                <div class="btn-group btn-group-sm">
-                                                    <a href="{{ route('orders.summary', $order->id) }}" 
-                                                       class="btn btn-outline-primary">
-                                                        View
+                                                <div class="btn-group">
+                                                    <a href="{{ route('admin.orders.show', $order->id) }}" 
+                                                       class="btn btn-sm btn-link p-0 me-2">
+                                                        <img src="{{ asset('images/edit.png') }}" alt="Edit" style="width: 24px; height: 24px;">
                                                     </a>
-                                                    <!-- Add more action buttons as needed -->
+                                                    @if($order->status === 'payment_verified')
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-outline-success"
+                                                            onclick="updateStatus({{ $order->id }}, 'printing_in_progress')">
+                                                        Start Printing
+                                                    </button>
+                                                    @elseif($order->status === 'printing_in_progress')
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-outline-success"
+                                                            onclick="updateStatus({{ $order->id }}, 'ready')">
+                                                        Mark as Ready
+                                                    </button>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -76,4 +68,25 @@
         </div>
     </div>
 </div>
+
+<script>
+function updateStatus(orderId, newStatus) {
+    if (confirm('Are you sure you want to update this order\'s status?')) {
+        fetch(`/admin/orders/${orderId}/status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            }
+        });
+    }
+}
+</script>
 @endsection
