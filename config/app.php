@@ -19,6 +19,26 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Configuration
+    |--------------------------------------------------------------------------
+    |
+    | These configuration options determine the admin settings for the application.
+    |
+    */
+
+    'admin' => [
+        'emails' => [
+            'acethesis2u@gmail.com',
+            'your_secondary_admin@gmail.com', // Add more admin emails here
+        ],
+        'domains' => [
+            'yourdomain.com', // Optional: Allow entire domains
+            'company.org',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

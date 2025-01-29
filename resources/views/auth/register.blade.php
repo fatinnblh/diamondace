@@ -61,7 +61,7 @@
                             </div>
                         </div>
 
-                        <div class="row mb-0">
+                        <div class="row mb-3">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Register') }}
@@ -69,6 +69,21 @@
                             </div>
                         </div>
                     </form>
+
+                    <div class="row mb-3">
+                        <div class="col-md-8 offset-md-4">
+                            <hr class="my-3">
+                            <p class="text-center">Or register with</p>
+                            <div class="d-flex justify-content-center">
+                                <a href="{{ route('google.login') }}" class="btn btn-danger mx-2">
+                                    <i class="fab fa-google mr-2"></i>Gmail
+                                </a>
+                                <a href="{{ route('facebook.login') }}" class="btn btn-primary mx-2">
+                                    <i class="fab fa-facebook mr-2"></i>Facebook
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

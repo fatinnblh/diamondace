@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\Auth\FacebookAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,9 +37,10 @@ Route::get('/orders/{order_id}/tracking', [OrderController::class, 'showTracking
 Route::post('/delivery-address/{order_id}', [OrderController::class, 'handleDeliveryAddress'])->name('delivery.address.submit');
 Route::post('/pickup-address/{order_id}', [OrderController::class, 'handlePickupAddress'])->name('pickup.address.submit');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+// Dashboard Route
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
+    ->name('dashboard')
+    ->middleware('auth');
 
 Route::post('/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 
@@ -50,4 +53,34 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
     Route::get('/admin/orders/{order_id}', [OrderController::class, 'adminShow'])->name('admin.orders.show');
     Route::post('/admin/orders/{order_id}/status', [OrderController::class, 'updateOrderStatus'])->name('admin.orders.update.status');
+
+    // No additional admin routes needed
 });
+
+// Admin Authentication Routes
+Route::get('/admin/login', function () {
+    return view('admin.login');
+})->name('admin.login');
+
+Route::get('/admin/auth/google', [App\Http\Controllers\Auth\AdminGoogleAuthController::class, 'redirectToGoogle'])
+    ->name('admin.google.login');
+
+Route::get('/admin/auth/google/callback', [App\Http\Controllers\Auth\AdminGoogleAuthController::class, 'handleGoogleCallback'])
+    ->name('admin.google.callback');
+
+// Google Authentication Routes
+Route::get('/auth/google', [App\Http\Controllers\Auth\GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [App\Http\Controllers\Auth\GoogleAuthController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::post('/auth/google/disconnect', [App\Http\Controllers\Auth\GoogleAuthController::class, 'disconnectGoogleAccount'])
+    ->name('google.disconnect')
+    ->middleware('auth');
+
+// Facebook Authentication Routes
+Route::get('/auth/facebook', [App\Http\Controllers\Auth\FacebookAuthController::class, 'redirectToFacebook'])->name('facebook.login');
+Route::get('/auth/facebook/callback', [App\Http\Controllers\Auth\FacebookAuthController::class, 'handleFacebookCallback'])->name('facebook.callback');
+
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
+// Removed the old Google authentication routes

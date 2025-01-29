@@ -232,13 +232,27 @@ class OrderController extends Controller
 
     public function updateOrderStatus(Request $request, $order_id)
     {
-        $request->validate([
-            'status' => 'required|string|in:printing_in_progress,ready'
+        $order = Order::findOrFail($order_id);
+
+        // Validate and update order status
+        $validatedData = $request->validate([
+            'status' => 'sometimes|in:pending,processing,shipped,delivered,cancelled',
+            'payment_status' => 'sometimes|in:incomplete,verified'
         ]);
 
-        $order = Order::findOrFail($order_id);
-        $order->update(['status' => $request->status]);
+        // Update order status if provided
+        if (isset($validatedData['status'])) {
+            $order->status = $validatedData['status'];
+        }
 
-        return response()->json(['success' => true]);
+        // Update payment status if provided
+        if (isset($validatedData['payment_status'])) {
+            $order->payment_status = $validatedData['payment_status'];
+        }
+
+        $order->save();
+
+        return redirect()->route('admin.orders.show', $order_id)
+            ->with('success', 'Order status updated successfully.');
     }
 }

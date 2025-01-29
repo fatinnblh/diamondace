@@ -21,7 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'google_id',
+        'avatar',
+        'is_admin',
     ];
 
     /**
@@ -41,11 +43,12 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_admin' => 'boolean',
     ];
 
     public function isAdmin()
     {
-        return $this->role === 'admin' || $this->role === 'Admin';
+        return $this->is_admin === true;
     }
 
     public function isUser()

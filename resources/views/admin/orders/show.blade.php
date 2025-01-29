@@ -71,6 +71,29 @@
                 </div>
             </div>
 
+            @if($order->status == 'pending')
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-center gap-3">
+                        <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="payment_status" value="incomplete">
+                            <button type="submit" class="btn btn-sm" style="background-color: #f69697; color: white;">
+                                Payment Incomplete
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="payment_status" value="verified">
+                            <button type="submit" class="btn btn-sm" style="background-color: #98fb98; color: black;">
+                                Verify Payment
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- Receipt Modal -->
             <div id="receiptModal" class="modal">
                 <div class="modal-content">
@@ -83,6 +106,77 @@
             @endif
         </div>
     </div>
+
+    @if(auth()->check() && auth()->user()->isAdmin())
+    <style>
+      .payment-status-container {
+        border-radius: 8px;
+        display: flex;
+        gap: 33px;
+        color: var(--Black, #000);
+        flex-wrap: nowrap;
+        font: 400 16px/1 Inter, sans-serif;
+        width: 100%;
+        align-items: stretch; /* Ensure equal height */
+      }
+      .status-incomplete,
+      .status-verify {
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        border: 1px solid var(--Black, #000);
+        display: flex;
+        min-height: 59px;
+        gap: 8px;
+        flex: 1;
+        padding: 18px 24px;
+        cursor: pointer;
+      }
+      .status-text {
+        align-self: center;
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: clip;
+        max-width: 100%;
+        text-align: center;
+      }
+      .status-incomplete {
+        background-color: #f69697;
+      }
+      .status-verify {
+        background-color: rgba(152, 251, 152, 0.73);
+      }
+      @media (max-width: 991px) {
+        .status-incomplete,
+        .status-verify {
+          padding: 0 20px;
+        }
+      }
+    </style>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="payment-status-container">
+                    <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="w-100">
+                        @csrf
+                        <input type="hidden" name="payment_status" value="incomplete">
+                        <div class="status-incomplete" onclick="this.closest('form').submit()" tabindex="0" role="button" aria-label="Mark Payment as Incomplete">
+                            <div class="status-text">Payment Incomplete</div>
+                        </div>
+                    </form>
+                    <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="w-100">
+                        @csrf
+                        <input type="hidden" name="payment_status" value="verified">
+                        <div class="status-verify" onclick="this.closest('form').submit()" tabindex="0" role="button" aria-label="Verify Payment">
+                            <div class="status-text">Verify Payment</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Status Buttons -->
     <div class="status-container">
