@@ -78,9 +78,6 @@
                                 <a href="{{ route('google.login') }}" class="btn btn-danger mx-2">
                                     <i class="fab fa-google mr-2"></i>Gmail
                                 </a>
-                                <a href="{{ route('facebook.login') }}" class="btn btn-primary mx-2">
-                                    <i class="fab fa-facebook mr-2"></i>Facebook
-                                </a>
                             </div>
                         </div>
                     </div>

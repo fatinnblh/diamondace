@@ -37,4 +37,18 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+    /**
+     * Get the post-authentication redirect path for the given user.
+     *
+     * @return string
+     */
+    protected function redirectTo()
+    {
+        if (auth()->check() && auth()->user()->isAdmin()) {
+            return route('admin.orders');
+        }
+
+        return $this->redirectTo;
+    }
 }

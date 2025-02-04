@@ -21,10 +21,10 @@ class AuthenticatedSessionController extends Controller
             
             // Check if user is admin and redirect accordingly
             if (Auth::user()->isAdmin()) {
-                return redirect()->route('admin.dashboard');
+                return redirect()->intended(route('admin.orders'));
             }
             
-            return redirect()->route('home');
+            return redirect()->intended(route('home'));
         }
 
         // If login fails, redirect back with an error

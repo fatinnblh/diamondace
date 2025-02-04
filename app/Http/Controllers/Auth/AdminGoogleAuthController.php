@@ -74,23 +74,16 @@ class AdminGoogleAuthController extends Controller
                     'name' => $googleUser->getName() ?? 'Admin User',
                     'password' => bcrypt(Str::random(16)),
                     'email_verified_at' => now(),
-                    // Force admin status for specific email
-                    'is_admin' => $adminEmail === 'acethesis2u@gmail.com' ? true : false,
+                    'is_admin' => true,  // Set admin status to true for all authorized users
                     'google_id' => $googleUser->getId(),
                     'avatar' => $googleUser->getAvatar(),
                 ]
             );
 
-            // Additional check to ensure admin status
-            if ($adminEmail === 'acethesis2u@gmail.com') {
-                $adminUser->is_admin = true;
-                $adminUser->save();
-            }
-
             // Login the admin
             Auth::login($adminUser);
 
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.orders');
         } catch (Exception $e) {
             Log::error('Admin Google Authentication Error', [
                 'message' => $e->getMessage(),

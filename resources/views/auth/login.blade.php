@@ -81,10 +81,7 @@
                             <p class="text-center">Or login with</p>
                             <div class="d-flex justify-content-center">
                                 <a href="{{ route('google.login') }}" class="btn btn-danger mx-2">
-                                    <i class="fab fa-google mr-2"></i>Gmail
-                                </a>
-                                <a href="{{ route('facebook.login') }}" class="btn btn-primary mx-2">
-                                    <i class="fab fa-facebook mr-2"></i>Facebook
+                                    <i class="fab fa-google mr-2"></i>  Gmail
                                 </a>
                             </div>
                         </div>

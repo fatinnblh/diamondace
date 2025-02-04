@@ -32,30 +32,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">System Overview</h5>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Total Orders
-                                            <span class="badge bg-primary rounded-pill">{{ $totalOrders ?? 0 }}</span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Total Users
-                                            <span class="badge bg-secondary rounded-pill">{{ $totalUsers ?? 0 }}</span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Pending Orders
-                                            <span class="badge bg-warning rounded-pill">{{ $pendingOrders ?? 0 }}</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

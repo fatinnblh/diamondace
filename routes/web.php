@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Auth\GoogleAuthController;
-use App\Http\Controllers\Auth\FacebookAuthController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,13 +45,13 @@ Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'inde
 
 Route::post('/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 
+// FAQ Route
+Route::get('/faq', [App\Http\Controllers\FaqController::class, 'index'])->name('faq');
+
 // Admin Routes
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-    
-    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin/orders/{order_id}', [OrderController::class, 'adminShow'])->name('admin.orders.show');
     Route::post('/admin/orders/{order_id}/status', [OrderController::class, 'updateOrderStatus'])->name('admin.orders.update.status');
 
@@ -74,10 +75,6 @@ Route::get('/auth/google/callback', [App\Http\Controllers\Auth\GoogleAuthControl
 Route::post('/auth/google/disconnect', [App\Http\Controllers\Auth\GoogleAuthController::class, 'disconnectGoogleAccount'])
     ->name('google.disconnect')
     ->middleware('auth');
-
-// Facebook Authentication Routes
-Route::get('/auth/facebook', [App\Http\Controllers\Auth\FacebookAuthController::class, 'redirectToFacebook'])->name('facebook.login');
-Route::get('/auth/facebook/callback', [App\Http\Controllers\Auth\FacebookAuthController::class, 'handleFacebookCallback'])->name('facebook.callback');
 
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
