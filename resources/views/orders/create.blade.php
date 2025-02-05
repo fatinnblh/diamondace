@@ -134,7 +134,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn-submit rounded-button">Place Order</button>
+                <button type="submit" class="btn-submit rounded-button">Order Summary</button>
             </form>
         </div>
         <div class="image-section">

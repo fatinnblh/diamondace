@@ -76,20 +76,6 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="payment-status-container">
-                            <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="w-100">
-                                @csrf
-                                <input type="hidden" name="payment_status" value="incomplete">
-                                <div class="status-incomplete" onclick="this.closest('form').submit()" tabindex="0" role="button" aria-label="Mark Payment as Incomplete">
-                                    <div class="status-text">Payment Incomplete</div>
-                                </div>
-                            </form>
-                            <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="w-100">
-                                @csrf
-                                <input type="hidden" name="payment_status" value="verified">
-                                <div class="status-verify" onclick="this.closest('form').submit()" tabindex="0" role="button" aria-label="Verify Payment">
-                                    <div class="status-text">Verify Payment</div>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -179,212 +165,235 @@
     <div class="status-container">
         <div class="status-buttons">
             @if($order->status === 'awaiting_payment')
-                <button class="status-button payment-incomplete" onclick="window.location.href='#'">
-                    Payment Incomplete
-                </button>
+                <form method="POST" action="{{ route('admin.orders.update.payment.status', $order->id) }}" class="d-inline">
+                    @csrf
+                    <input type="hidden" name="payment_status" value="incomplete">
+                    <button type="submit" class="status-button payment-incomplete">
+                        Payment Incomplete
+                    </button>
+                </form>
                 @if($order->receipt_path)
-                <button class="status-button payment-verify" onclick="updateStatus({{ $order->id }}, 'payment_verified')">
-                    Verify Payment
-                </button>
+                <form method="POST" action="{{ route('admin.orders.update.payment.status', $order->id) }}" class="d-inline">
+                    @csrf
+                    <input type="hidden" name="payment_status" value="verified">
+                    <button type="submit" class="status-button payment-verify">
+                        Verify Payment
+                    </button>
+                </form>
                 @endif
             @elseif($order->status === 'payment_verified')
-                <button class="status-button payment-verify" onclick="updateStatus({{ $order->id }}, 'ready')">
-                    Mark as Ready
-                </button>
-            @elseif($order->status === 'ready')
+                <form method="POST" action="{{ route('admin.orders.update.order.status', $order->id) }}" class="d-inline">
+                    @csrf
+                    <input type="hidden" name="status" value="printing">
+                    <button type="submit" class="status-button payment-verify">
+                        Start Printing
+                    </button>
+                </form>
+            @elseif($order->status === 'printing')
+                <form method="POST" action="{{ route('admin.orders.update.order.status', $order->id) }}" class="d-inline">
+                    @csrf
+                    <input type="hidden" name="status" value="ready">
+                    <button type="submit" class="status-button payment-verify">
+                        Mark as Ready
+                    </button>
+                </form>
+            @elseif($order->status === 'ready_pickup')
                 <button class="status-button payment-verify" disabled>
-                    Order Completed
+                    Ready for Pickup
+                </button>
+            @elseif($order->status === 'ready_delivery')
+                <button class="status-button payment-verify" disabled>
+                    Ready for Delivery
                 </button>
             @endif
         </div>
     </div>
-</div>
 
-<style>
-.receipt-upload {
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
-    border: 1px solid var(--Main-color, #0a2472);
-    background-color: #e1ebee;
-    display: flex;
-    min-height: 59px;
-    padding: 18px 24px;
-    font: 400 22px/1 Inter, sans-serif;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
+    <style>
+    .receipt-upload {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        border: 1px solid var(--Main-color, #0a2472);
+        background-color: #e1ebee;
+        display: flex;
+        min-height: 59px;
+        padding: 18px 24px;
+        font: 400 22px/1 Inter, sans-serif;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
 
-.receipt-upload:hover {
-    background-color: #d1dbe0;
-}
+    .receipt-upload:hover {
+        background-color: #d1dbe0;
+    }
 
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    overflow: auto;
-}
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        overflow: auto;
+    }
 
-.modal-content {
-    position: relative;
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 80%;
-    max-height: 90vh;
-    top: 50%;
-    transform: translateY(-50%);
-}
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 80%;
+        max-height: 90vh;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 
-.modal-receipt-img {
-    width: 100%;
-    max-height: calc(90vh - 60px);
-    object-fit: contain;
-}
+    .modal-receipt-img {
+        width: 100%;
+        max-height: calc(90vh - 60px);
+        object-fit: contain;
+    }
 
-.close {
-    position: absolute;
-    right: 20px;
-    top: 10px;
-    color: #0a2472;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
+    .close {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        color: #0a2472;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-.close:hover {
-    color: #000;
-}
+    .close:hover {
+        color: #000;
+    }
 
-.status-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 32px;
-    width: 100%;
-    margin-bottom: 32px;
-}
-
-.status-buttons {
-    display: flex;
-    gap: 33px;
-    max-width: 812px;
-    width: 100%;
-    justify-content: center;
-}
-
-.status-button {
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
-    border: 1px solid #000;
-    display: flex;
-    min-height: 59px;
-    padding: 18px 24px;
-    font: 400 22px/1 Inter, sans-serif;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    min-width: 200px;
-}
-
-.status-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.8;
-}
-
-.payment-incomplete {
-    background-color: #F69697;
-    cursor: pointer;
-}
-
-.payment-incomplete:hover {
-    opacity: 0.9;
-}
-
-.payment-verify {
-    background-color: #98FB98;
-}
-
-@media (max-width: 991px) {
     .status-container {
-        padding: 0 20px;
+        display: flex;
+        justify-content: center;
+        margin-top: 32px;
+        width: 100%;
+        margin-bottom: 32px;
     }
-}
 
-.ready-status-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.status-ready {
-    background-color: #28a745;
-    color: white;
-    padding: 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-
-.status-ready:hover {
-    background-color: #218838;
-    transform: translateY(-2px);
-}
-</style>
-
-<script>
-function updateStatus(orderId, newStatus) {
-    if (confirm('Are you sure you want to update this order\'s status?')) {
-        fetch(`/admin/orders/${orderId}/status`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ status: newStatus })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.reload();
-            }
-        });
+    .status-buttons {
+        display: flex;
+        gap: 33px;
+        max-width: 812px;
+        width: 100%;
+        justify-content: center;
     }
-}
 
-function openReceiptModal() {
-    document.getElementById('receiptModal').style.display = 'block';
-    document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
-}
-
-function closeReceiptModal() {
-    document.getElementById('receiptModal').style.display = 'none';
-    document.body.style.overflow = 'auto'; // Restore scrolling
-}
-
-// Close modal when clicking outside of it
-window.onclick = function(event) {
-    var modal = document.getElementById('receiptModal');
-    if (event.target == modal) {
-        closeReceiptModal();
+    .status-button {
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        border: 1px solid #000;
+        display: flex;
+        min-height: 59px;
+        padding: 18px 24px;
+        font: 400 22px/1 Inter, sans-serif;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        min-width: 200px;
     }
-}
 
-// Close modal with Escape key
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        closeReceiptModal();
+    .status-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.8;
     }
-});
-</script>
+
+    .payment-incomplete {
+        background-color: #F69697;
+        cursor: pointer;
+    }
+
+    .payment-incomplete:hover {
+        opacity: 0.9;
+    }
+
+    .payment-verify {
+        background-color: #98FB98;
+    }
+
+    @media (max-width: 991px) {
+        .status-container {
+            padding: 0 20px;
+        }
+    }
+
+    .ready-status-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .status-ready {
+        background-color: #28a745;
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .status-ready:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+    }
+    </style>
+
+    <script>
+    function updateStatus(orderId, newStatus) {
+        if (confirm('Are you sure you want to update this order\'s status?')) {
+            fetch(`/admin/orders/${orderId}/status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ status: newStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            });
+        }
+    }
+
+    function openReceiptModal() {
+        document.getElementById('receiptModal').style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+    }
+
+    function closeReceiptModal() {
+        document.getElementById('receiptModal').style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        var modal = document.getElementById('receiptModal');
+        if (event.target == modal) {
+            closeReceiptModal();
+        }
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeReceiptModal();
+        }
+    });
+    </script>
 @endsection

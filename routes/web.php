@@ -62,8 +62,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin/orders/{order_id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-    Route::post('/admin/orders/{order_id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update.status');
+    Route::post('/admin/orders/{order_id}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('admin.orders.update.payment.status');
     Route::post('/admin/orders/{order_id}/order-status', [AdminOrderController::class, 'updateOrderStatus'])->name('admin.orders.update.order.status');
+    Route::post('/admin/orders/delete-all', [App\Http\Controllers\Admin\OrderManagementController::class, 'deleteAllOrders'])->name('admin.orders.delete.all');
 });
 
 // Admin Authentication Routes

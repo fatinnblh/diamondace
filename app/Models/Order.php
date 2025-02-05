@@ -28,8 +28,9 @@ class Order extends Model
     const STATUS_ORDER_SUBMITTED = 'order_submitted';
     const STATUS_AWAITING_PAYMENT = 'awaiting_payment';
     const STATUS_PAYMENT_VERIFIED = 'payment_verified';
-    const STATUS_PRINTING = 'printing_in_progress';
-    const STATUS_READY = 'ready';
+    const STATUS_PRINTING = 'printing';
+    const STATUS_READY_PICKUP = 'ready_pickup';
+    const STATUS_READY_DELIVERY = 'ready_delivery';
 
     public function user()
     {
@@ -63,7 +64,8 @@ class Order extends Model
             self::STATUS_AWAITING_PAYMENT => 'Awaiting Payment Verification',
             self::STATUS_PAYMENT_VERIFIED => 'Payment Verified with Receipt',
             self::STATUS_PRINTING => 'Printing in Progress',
-            self::STATUS_READY => $this->shipping_option === 'pickup' ? 'Ready to Pick Up' : 'Ready for Delivery'
+            self::STATUS_READY_PICKUP => 'Ready to Pick Up',
+            self::STATUS_READY_DELIVERY => 'Ready for Delivery'
         ];
 
         return $statuses[$this->status] ?? ucfirst(str_replace('_', ' ', $this->status));
@@ -76,7 +78,8 @@ class Order extends Model
             self::STATUS_AWAITING_PAYMENT,
             self::STATUS_PAYMENT_VERIFIED,
             self::STATUS_PRINTING,
-            self::STATUS_READY
+            self::STATUS_READY_PICKUP,
+            self::STATUS_READY_DELIVERY
         ];
 
         $currentStatusIndex = array_search($this->status, $allStatuses);
@@ -98,7 +101,8 @@ class Order extends Model
             self::STATUS_AWAITING_PAYMENT => 'Awaiting Payment Verification',
             self::STATUS_PAYMENT_VERIFIED => 'Payment Verified with Receipt',
             self::STATUS_PRINTING => 'Printing in Progress',
-            self::STATUS_READY => $this->shipping_option === 'pickup' ? 'Ready to Pick Up' : 'Ready for Delivery'
+            self::STATUS_READY_PICKUP => 'Ready to Pick Up',
+            self::STATUS_READY_DELIVERY => 'Ready for Delivery'
         ];
 
         return $statuses[$status] ?? ucfirst(str_replace('_', ' ', $status));

@@ -28,23 +28,23 @@
                                     
                                     <div class="progress-tracker">
                                         <div class="progress-steps">
-                                            <div class="step {{ in_array($order->status, ['order_submitted', 'awaiting_payment', 'payment_verified', 'printing_in_progress', 'ready']) ? 'active' : '' }}">
+                                            <div class="step {{ in_array($order->status, ['order_submitted', 'awaiting_payment', 'payment_verified', 'printing', 'ready_pickup', 'ready_delivery']) ? 'active' : '' }}">
                                                 <div class="step-circle">1</div>
                                                 <div class="step-label">Order Submitted</div>
                                             </div>
-                                            <div class="step {{ in_array($order->status, ['awaiting_payment', 'payment_verified', 'printing_in_progress', 'ready']) ? 'active' : '' }}">
+                                            <div class="step {{ in_array($order->status, ['awaiting_payment', 'payment_verified', 'printing', 'ready_pickup', 'ready_delivery']) ? 'active' : '' }}">
                                                 <div class="step-circle">2</div>
                                                 <div class="step-label">Awaiting Payment</div>
                                             </div>
-                                            <div class="step {{ in_array($order->status, ['payment_verified', 'printing_in_progress', 'ready']) ? 'active' : '' }}">
+                                            <div class="step {{ in_array($order->status, ['payment_verified', 'printing', 'ready_pickup', 'ready_delivery']) ? 'active' : '' }}">
                                                 <div class="step-circle">3</div>
                                                 <div class="step-label">Payment Verified</div>
                                             </div>
-                                            <div class="step {{ in_array($order->status, ['printing_in_progress', 'ready']) ? 'active' : '' }}">
+                                            <div class="step {{ in_array($order->status, ['printing', 'ready_pickup', 'ready_delivery']) ? 'active' : '' }}">
                                                 <div class="step-circle">4</div>
                                                 <div class="step-label">Printing</div>
                                             </div>
-                                            <div class="step {{ $order->status == 'ready' ? 'active' : '' }}">
+                                            <div class="step {{ in_array($order->status, ['ready_pickup', 'ready_delivery']) ? 'active' : '' }}">
                                                 <div class="step-circle">5</div>
                                                 <div class="step-label">{{ $order->shipping_option === 'pickup' ? 'Ready to Pick Up' : 'Ready for Delivery' }}</div>
                                             </div>
@@ -53,19 +53,19 @@
                                             <div class="progress">
                                                 <div class="progress-bar" role="progressbar" 
                                                     style="width: {{ 
-                                                        $order->status == 'ready' ? '100' : 
-                                                        ($order->status == 'printing_in_progress' ? '80' : 
-                                                        ($order->status == 'payment_verified' ? '60' : 
-                                                        ($order->status == 'awaiting_payment' ? '40' : 
-                                                        ($order->status == 'order_submitted' ? '20' : '0')))) 
-                                                    }}%"
+                                                        in_array($order->status, ['ready_pickup', 'ready_delivery']) ? '100' : 
+                                                        ($order->status === 'printing' ? '80' : 
+                                                        ($order->status === 'payment_verified' ? '60' : 
+                                                        ($order->status === 'awaiting_payment' ? '40' : 
+                                                        ($order->status === 'order_submitted' ? '20' : '0')))) 
+                                                    }}%" 
                                                     aria-valuenow="{{ 
-                                                        $order->status == 'ready' ? '100' : 
-                                                        ($order->status == 'printing_in_progress' ? '80' : 
-                                                        ($order->status == 'payment_verified' ? '60' : 
-                                                        ($order->status == 'awaiting_payment' ? '40' : 
-                                                        ($order->status == 'order_submitted' ? '20' : '0')))) 
-                                                    }}"
+                                                        in_array($order->status, ['ready_pickup', 'ready_delivery']) ? '100' : 
+                                                        ($order->status === 'printing' ? '80' : 
+                                                        ($order->status === 'payment_verified' ? '60' : 
+                                                        ($order->status === 'awaiting_payment' ? '40' : 
+                                                        ($order->status === 'order_submitted' ? '20' : '0')))) 
+                                                    }}" 
                                                     aria-valuemin="0" 
                                                     aria-valuemax="100">
                                                 </div>
@@ -76,6 +76,11 @@
                                     <div class="order-details mt-3">
                                         <div class="row">
                                             <div class="col-md-6">
+                                                @if($order->payment_message)
+                                                    <div class="alert alert-warning">
+                                                        {{ $order->payment_message }}
+                                                    </div>
+                                                @endif
                                                 <small class="text-muted">Order Details:</small>
                                                 <ul class="list-unstyled mb-0">
                                                     <li>Paper Size: {{ $order->paper_size }}</li>
