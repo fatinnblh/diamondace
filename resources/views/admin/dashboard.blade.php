@@ -5,12 +5,8 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header">
                     <span>{{ __('Admin Dashboard') }}</span>
-                    <form action="{{ route('logout') }}" method="POST" class="m-0">
-                        @csrf
-                        <button type="submit" class="btn btn-outline-danger btn-sm">{{ __('Logout') }}</button>
-                    </form>
                 </div>
 
                 <div class="card-body">

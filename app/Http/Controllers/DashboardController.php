@@ -38,6 +38,8 @@ class DashboardController extends Controller
         }
 
         // Regular user dashboard
-        return view('dashboard');
+        $orders = $user->orders()->with(['user'])->get();
+
+        return view('dashboard', compact('orders'));
     }
 }

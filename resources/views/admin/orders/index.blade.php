@@ -7,9 +7,6 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>{{ __('Manage Orders') }}</span>
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm">
-                        {{ __('Back to Dashboard') }}
-                    </a>
                 </div>
 
                 <div class="card-body">

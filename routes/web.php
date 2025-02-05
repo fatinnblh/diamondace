@@ -22,6 +22,10 @@ Route::get('/', function () {
     return view('home.index');
 });
 
+Route::get('/service', function () {
+    return view('service');
+});
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -48,14 +52,18 @@ Route::post('/reviews', [App\Http\Controllers\ReviewController::class, 'store'])
 // FAQ Route
 Route::get('/faq', [App\Http\Controllers\FaqController::class, 'index'])->name('faq');
 
+// About Page Route
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
 // Admin Routes
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-    Route::get('/admin/orders/{order_id}', [OrderController::class, 'adminShow'])->name('admin.orders.show');
-    Route::post('/admin/orders/{order_id}/status', [OrderController::class, 'updateOrderStatus'])->name('admin.orders.update.status');
-
-    // No additional admin routes needed
+    Route::get('/admin/orders/{order_id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+    Route::post('/admin/orders/{order_id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update.status');
+    Route::post('/admin/orders/{order_id}/order-status', [AdminOrderController::class, 'updateOrderStatus'])->name('admin.orders.update.order.status');
 });
 
 // Admin Authentication Routes

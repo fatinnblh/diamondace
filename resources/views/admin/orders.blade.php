@@ -6,8 +6,9 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>{{ __('Manage Orders') }}</span>
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm">Back to Dashboard</a>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="mb-0">{{ __('Orders') }}</h2>
+                    </div>
                 </div>
 
                 <div class="card-body">
@@ -35,7 +36,7 @@
                                     <td>{{ $order->created_at->format('M d, Y H:i') }}</td>
                                     <td>
                                         <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-primary btn-sm">
-                                            View Details
+                                            <i class="fas fa-pencil-alt"></i>
                                         </a>
                                     </td>
                                 </tr>

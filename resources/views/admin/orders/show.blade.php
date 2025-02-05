@@ -71,24 +71,44 @@
                 </div>
             </div>
 
-            @if($order->status == 'pending')
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="d-flex justify-content-center gap-3">
-                        <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="d-inline">
-                            @csrf
-                            <input type="hidden" name="payment_status" value="incomplete">
-                            <button type="submit" class="btn btn-sm" style="background-color: #f69697; color: white;">
-                                Payment Incomplete
-                            </button>
-                        </form>
-                        <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="d-inline">
-                            @csrf
-                            <input type="hidden" name="payment_status" value="verified">
-                            <button type="submit" class="btn btn-sm" style="background-color: #98fb98; color: black;">
-                                Verify Payment
-                            </button>
-                        </form>
+            @if($order->status == 'order_submitted' || $order->status == 'awaiting_payment')
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="payment-status-container">
+                            <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="w-100">
+                                @csrf
+                                <input type="hidden" name="payment_status" value="incomplete">
+                                <div class="status-incomplete" onclick="this.closest('form').submit()" tabindex="0" role="button" aria-label="Mark Payment as Incomplete">
+                                    <div class="status-text">Payment Incomplete</div>
+                                </div>
+                            </form>
+                            <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="w-100">
+                                @csrf
+                                <input type="hidden" name="payment_status" value="verified">
+                                <div class="status-verify" onclick="this.closest('form').submit()" tabindex="0" role="button" aria-label="Verify Payment">
+                                    <div class="status-text">Verify Payment</div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if($order->status == 'printing_in_progress')
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="ready-status-container">
+                            <form method="POST" action="{{ route('admin.orders.update.order.status', $order->id) }}" class="w-100">
+                                @csrf
+                                <input type="hidden" name="status" value="ready">
+                                <div class="status-ready" onclick="this.closest('form').submit()" tabindex="0" role="button" aria-label="Mark as Ready">
+                                    <div class="status-text">Mark as Ready</div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -153,29 +173,6 @@
         }
       }
     </style>
-
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="payment-status-container">
-                    <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="w-100">
-                        @csrf
-                        <input type="hidden" name="payment_status" value="incomplete">
-                        <div class="status-incomplete" onclick="this.closest('form').submit()" tabindex="0" role="button" aria-label="Mark Payment as Incomplete">
-                            <div class="status-text">Payment Incomplete</div>
-                        </div>
-                    </form>
-                    <form method="POST" action="{{ route('admin.orders.update.status', $order->id) }}" class="w-100">
-                        @csrf
-                        <input type="hidden" name="payment_status" value="verified">
-                        <div class="status-verify" onclick="this.closest('form').submit()" tabindex="0" role="button" aria-label="Verify Payment">
-                            <div class="status-text">Verify Payment</div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
     @endif
 
     <!-- Status Buttons -->
@@ -191,10 +188,6 @@
                 </button>
                 @endif
             @elseif($order->status === 'payment_verified')
-                <button class="status-button payment-verify" onclick="updateStatus({{ $order->id }}, 'printing_in_progress')">
-                    Start Printing
-                </button>
-            @elseif($order->status === 'printing_in_progress')
                 <button class="status-button payment-verify" onclick="updateStatus({{ $order->id }}, 'ready')">
                     Mark as Ready
                 </button>
@@ -324,6 +317,28 @@
     .status-container {
         padding: 0 20px;
     }
+}
+
+.ready-status-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.status-ready {
+    background-color: #28a745;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.status-ready:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
 }
 </style>
 

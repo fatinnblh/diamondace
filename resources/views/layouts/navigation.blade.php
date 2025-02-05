@@ -90,7 +90,7 @@
 <nav class="nav-container" role="navigation">
     @auth
         @if(auth()->check() && auth()->user()->isAdmin())
-            <a href="{{ url('/admin') }}" class="brand-logo">AceThesis@U</a>
+            <a href="{{ route('admin.dashboard') }}" class="brand-logo">AceThesis@U</a>
         @else
             <a href="{{ url('/') }}" class="brand-logo">AceThesis@U</a>
         @endif
@@ -100,7 +100,7 @@
     <div class="nav-links">
         @auth
             @if(auth()->check() && auth()->user()->isAdmin())
-                <a href="{{ url('/admin') }}" tabindex="0">Home</a>
+                <a href="{{ route('admin.dashboard') }}" tabindex="0">Home</a>
             @else
                 <a href="{{ url('/') }}" tabindex="0">Home</a>
             @endif
